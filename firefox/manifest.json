@@ -53,7 +53,7 @@
     ],
     "browser_specific_settings": {
        "gecko": {
-         "id": "rss-finder-firefox@mtaha.dev",
+         "id": "rss-finder@mtaha.dev",
          "strict_min_version": "109.0"
        }
     }
