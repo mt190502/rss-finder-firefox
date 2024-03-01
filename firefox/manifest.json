@@ -1,40 +1,60 @@
 {
-    "manifest_version": 2,
+    "manifest_version": 3,
 
-    "name": "RSS Finder",
+    "name": "RSS Finder (for Firefox)",
     "short_name": "RSS Finder",
-    "description": "Lists RSS and Atom feeds available on the current web page.",
-    "version": "1.2",
-    "homepage_url": "https://andyls.co.uk/projects/rss-finder",
+    "description": "Lists RSS and Atom feeds available on the current web page. (fork of andylshort/RSS-Finder)",
+    "version": "2.0",
+    "homepage_url": "https://github.com/mt190502/rss-finder-firefox",
+    "permissions": [
+        "tabs",
+        "scripting"
+    ],
+    "action": {
+        "default_popup": "popup.html",
+        "default_icon": {
+            "48": "img/rss_grey_128.png"
+        }
+    },
+    "background": {
+        "scripts": [
+            "js/background.js"
+        ]
+    },
+    "content_scripts": [
+       {
+         "matches": ["<all_urls>"],
+         "js": ["js/background.js"],
+         "run_at": "document_end"
+       }
+    ],
     "icons": {
         "16": "img/rss_grey_16.png",
         "48": "img/rss_grey_48.png",
         "128": "img/rss_grey_128.png",
         "512": "img/rss_grey_512.png"
     },
-
-    "page_action": {
-        "default_icon": {
-            "48": "img/rss_grey_48.png"
-        }
-    },
-    "background": {
-        "scripts": ["js/background.js"]
-    },
-
-    "content_scripts": [{
-        "matches": ["<all_urls>"],
-        "js": ["js/document.js"],
-        "run_at": "document_end"
-    }],
-
+    "host_permissions": [
+       "https://*/*",
+       "http://*/*"
+    ],
     "options_ui": {
         "page": "options.html",
-        "browser_style": true,
-        "chrome_style": true
+        "open_in_tab": false
     },
-    "permissions": [
-        "*://*/*",
-        "activeTab"
-    ]
+    "content_security_policy": {
+        "extension_pages": "script-src 'self'; object-src 'self'"
+    },
+    "web_accessible_resources": [
+       {
+         "resources": ["img/*"],
+         "matches": ["<all_urls>"]
+       }
+    ],
+    "browser_specific_settings": {
+       "gecko": {
+         "id": "rss-finder-firefox@mtaha.dev",
+         "strict_min_version": "109.0"
+       }
+    }
 }

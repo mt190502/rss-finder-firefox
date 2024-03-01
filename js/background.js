@@ -1,9 +1,8 @@
-/* global chrome */
 function updatePA(tabId, feedLinks) {
     if (feedLinks.length == 0) {
         console.log(`No feeds, so disabling action for tab ${tabId}...`);
-        chrome.action.disable(tabId);
-        chrome.action.setIcon({
+        browser.action.disable(tabId);
+        browser.action.setIcon({
             path: {
                 "16": "/img/rss_grey_16.png",
                 "48": "/img/rss_grey_48.png",
@@ -12,7 +11,7 @@ function updatePA(tabId, feedLinks) {
             },
             tabId: tabId
         });
-        chrome.action.setTitle({
+        browser.action.setTitle({
             tabId: tabId,
             title: "RSS Finder"
         });
@@ -20,12 +19,12 @@ function updatePA(tabId, feedLinks) {
     }
     
     // Construct the new pop-up for this current tab
-    chrome.action.enable(tabId);
-    chrome.action.setTitle({
+    browser.action.enable(tabId);
+    browser.action.setTitle({
         tabId: tabId,
         title: `Found ${feedLinks.length} feed(s)`
     });
-    chrome.action.setIcon({
+    browser.action.setIcon({
         path: {
             "16": "/img/rss_16.png",
             "48": "/img/rss_48.png",
@@ -36,10 +35,10 @@ function updatePA(tabId, feedLinks) {
     });
     console.log("Setting pop-up...");
 
-    const url = new URL(chrome.runtime.getURL('popup.html'));
+    const url = new URL(browser.runtime.getURL('popup.html'));
     url.searchParams.set('feedLinks', JSON.stringify(feedLinks));
     console.log(url.toString());
-    chrome.action.setPopup({
+    browser.action.setPopup({
         tabId: tabId,
         popup: url.toString()
     });
@@ -77,14 +76,14 @@ function scrapeFeedLinks() {
 
 function scrapePage(tabId) {
     console.log("Scraping tab: " + tabId);
-    chrome.scripting.executeScript({
+    browser.scripting.executeScript({
         target: {tabId: tabId},
         func: scrapeFeedLinks
     },
     (InjectionResults) => {
         console.log(InjectionResults);
-        if (chrome.runtime.lastError) {
-            // Consume errors to do with chrome:// urls
+        if (browser.runtime.lastError) {
+            // Consume errors to do with browser.// urls
             // FIXME: Handle this in a cleaner wa
         }
         else {
@@ -96,17 +95,20 @@ function scrapePage(tabId) {
     });
 }
 
-chrome.runtime.onMessage.addListener((message, sender) => {
+browser.runtime.onMessage.addListener((message, sender) => {
     console.log("received message from " + sender);
 });
-chrome.tabs.onUpdated.addListener((tabId) => {
-    chrome.action.disable(tabId);
+
+browser.tabs.onUpdated.addListener((tabId) => {
+    browser.action.disable(tabId);
     scrapePage(tabId);
 });
-chrome.tabs.onActivated.addListener((activeInfo) => {
-    chrome.action.disable(activeInfo.tabId);
+
+browser.tabs.onActivated.addListener((activeInfo) => {
+    browser.action.disable(activeInfo.tabId);
     scrapePage(activeInfo.tabId);
 });
-chrome.runtime.onInstalled.addListener(() => {
-    chrome.action.disable();
+
+browser.runtime.onInstalled.addListener(() => {
+    browser.action.disable();
 });

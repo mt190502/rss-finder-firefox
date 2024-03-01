@@ -11,7 +11,7 @@ function copyTextToClipboard(text) {
 
 function init() {
     document.getElementById("options").addEventListener("click", function(event) {
-        chrome.runtime.openOptionsPage();
+        browser.runtime.openOptionsPage();
     });
 
     const url = new URL(location.href);
@@ -60,8 +60,6 @@ function init() {
         copyTextToClipboard(event.target.value);
     });
 };
-
-
 
 
 if (['interactive', 'complete'].includes(document.readyState)) {
